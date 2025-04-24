@@ -39,6 +39,9 @@ export default function SugarScreen() {
   const [levels, setLevels] = useState([0.5, 0.5, 0.5, 0.5]);
   const titles = ['설탕량', '커피량', '얼음량', '우유량'];
   const navigation = useNavigation();
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [selectedRoom, setSelectedRoom] = useState(null);
+
 
   const send = () => {
     alert("주문이 완료되었습니다");
@@ -68,6 +71,40 @@ export default function SugarScreen() {
       ))}
 
 
+<MidContainer>
+  <MidText>배달 장소</MidText>
+  <AccordionContainer>
+  <AccordionHeader onPress={() => setIsExpanded(!isExpanded)}>
+    <AccordionTitle>
+      {selectedRoom ? `선택됨: ${selectedRoom}` : '예약 가능한 공간'}
+    </AccordionTitle>
+  </AccordionHeader>
+
+  {isExpanded && (
+    <AccordionContent>
+      {['교실', '강당', '회의실'].map((room) => (
+        <AccordionItem
+          key={room}
+          onPress={() => {
+            setSelectedRoom(room);
+            setIsExpanded(false); 
+          }}
+          isSelected={selectedRoom === room}
+        >
+          <ItemText isSelected={selectedRoom === room}>{room}</ItemText>
+        </AccordionItem>
+      ))}
+    </AccordionContent>
+  )}
+</AccordionContainer>
+
+
+</MidContainer>
+
+
+
+
+
       <OrderButton onPress={send}>
         <OrderText>주문하기</OrderText>
       </OrderButton>
@@ -75,7 +112,7 @@ export default function SugarScreen() {
   );
 }
 
-// ===== Styled Components =====
+
 
 const Container = styled.ScrollView`
   flex: 1;
@@ -148,3 +185,47 @@ const OrderText = styled.Text`
   font-size: 16px;
   font-weight: bold;
 `;
+const AccordionContainer = styled.View`
+  margin-top: 30px;
+`;
+
+const AccordionHeader = styled.TouchableOpacity`
+  background-color: #f1f1f1;
+  padding: 15px;
+  border-radius: 10px;
+`;
+
+const AccordionTitle = styled.Text`
+  font-size: 16px;
+  font-weight: bold;
+`;
+
+const AccordionContent = styled.View`
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #eee;
+  border-radius: 10px;
+`;
+
+const AccordionItem = styled.TouchableOpacity`
+  padding: 10px;
+  border-bottom-width: 1px;
+  border-bottom-color: #eee;
+  background-color: ${({ isSelected }) => (isSelected ? '#dfefff' : '#fff')};
+  border-radius: 8px;
+`;
+
+const ItemText = styled.Text`
+  color: ${({ isSelected }) => (isSelected ? '#007aff' : '#333')};
+  font-weight: ${({ isSelected }) => (isSelected ? 'bold' : 'normal')};
+`;
+
+const MidContainer = styled.View`
+  align-items: center;
+`
+
+const MidText = styled.Text`
+  text-align: center;
+  font-weight: bold;
+`
