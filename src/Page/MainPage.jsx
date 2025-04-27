@@ -8,7 +8,7 @@ export default function MainPage(){
             <MainText>어디든 배달 가능한 AI카페</MainText>
             <LowContent>
                 <BigBox text="주문하기" go="Order" />
-                <BigBox text="조회하기" go=" " />
+                <BigBox text="조회하기" go="List" />
             </LowContent>
         </Container>
     )
