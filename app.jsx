@@ -1,7 +1,7 @@
 import React from "react";
 import { Text, View } from "react-native";
 import { createStackNavigator } from '@react-navigation/stack';
-import MainPage from "./src/Page/MainPage";
+import MainPage from "./src/Page/MainPage.jsx";
 import Order from "./src/Page/Order";
 import SugarScreen from "./src/Page/SugarScreen";
 import List from "./src/Page/List";
