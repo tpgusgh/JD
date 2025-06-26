@@ -177,7 +177,6 @@ const OrderButton = styled.TouchableOpacity`
   shadow-color: #000;
   shadow-opacity: 0.1;
   shadow-radius: 10px;
-  elevation: 3;  //왜 에러
   margin-bottom: 100px;
 `;
 
