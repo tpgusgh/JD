@@ -180,6 +180,7 @@ const OrderButton = styled.TouchableOpacity`
   margin-bottom: 100px;
 `;
 
+
 const OrderText = styled.Text`
   font-size: 16px;
   font-weight: bold;
