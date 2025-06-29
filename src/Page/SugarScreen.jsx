@@ -100,11 +100,6 @@ export default function SugarScreen() {
 
 
 </MidContainer>
-
-
-
-
-
       <OrderButton onPress={send}>
         <OrderText>주문하기</OrderText>
       </OrderButton>
