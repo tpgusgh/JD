@@ -1,7 +1,9 @@
-import React, { useState, useCallback } from 'react';
+import init from '@taoqf/react-native-mqtt';
+import React, { useState, useCallback,useEffect } from 'react';
 import styled from 'styled-components/native';
 import Slider from '@react-native-community/slider';
 import { useNavigation } from 'expo-router';
+const mqtt = init;
 
 const CustomSlider = React.memo(({ title, value, onFinalChange }) => {
   const [tempValue, setTempValue] = useState(value);
@@ -10,7 +12,7 @@ const CustomSlider = React.memo(({ title, value, onFinalChange }) => {
     <SliderBlock>
       <SliderTitle>{title}</SliderTitle>
       <LabelRow>
-        <Label>적게</Label>
+        <Label>없음</Label>
         <Label>중간</Label>
         <Label>많음</Label>
       </LabelRow>
@@ -29,7 +31,7 @@ const CustomSlider = React.memo(({ title, value, onFinalChange }) => {
       </ThumbTouchArea>
 
       <SelectedValue>
-        선택: {tempValue < 0.33 ? '적게' : tempValue < 0.66 ? '중간' : '많음'}
+        선택: {tempValue < 0.1 ? '없음' : tempValue < 0.33 ? "적음" : tempValue < 0.66 ? '중간' : '많음'}
       </SelectedValue>
     </SliderBlock>
   );
@@ -41,12 +43,58 @@ export default function SugarScreen() {
   const navigation = useNavigation();
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState(null);
+  const clientId = `emqx_react_${Math.random().toString(16).substring(2, 8)}`;
+  const username = "bssm_free"; //클라에셔햐교
+  const password = "bssm_free"; //esp에서도 설정 필수
+  const [client, setClient] = useState(null);
+
+  useEffect(() => {
+  const mqttClient = mqtt.connect("ws://10.150.2.255:9001", {
+    clientId,
+    username,
+    password,
+  });
+
+  mqttClient.on('connect', () => {
+    console.log('Connected to MQTT broker');
+  });
+
+  mqttClient.on('error', (err) => {
+    console.log('Connection error: ', err);
+    mqttClient.end();
+  });
+
+  setClient(mqttClient);
+
+  return () => {
+    mqttClient.end();
+  };
+}, []);
 
 
   const send = () => {
-    alert("주문이 완료되었습니다");
-    navigation.navigate("MainPage");
+  if (client && client.connected) {
+    const payload = JSON.stringify({
+      sugar: levels[0],
+      coffee: levels[1],
+      ice: levels[2],
+      milk: levels[3],
+      room: selectedRoom,
+    });
+
+    client.publish('bssm/wodnr', payload, 0, (error) => {
+      if (error) {
+        console.log('Publish error: ', error);
+      } else {
+        alert('주문이 완료되었습니다!');
+        navigation.navigate('MainPage');
+      }
+    });
+  } else {
+    alert('MQTT 서버에 연결되지 않았습니다.');
   }
+};
+
 
   const updateLevel = useCallback((index, val) => {
     setLevels((prev) => {
