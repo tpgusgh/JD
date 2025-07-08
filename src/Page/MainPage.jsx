@@ -9,6 +9,7 @@ export default function MainPage(){
             <LowContent>
                 <BigBox text="주문하기" go="Order" />
                 <BigBox text="조회하기" go="List" />
+                <BigBox text="재고관리" go="StockPage" />
             </LowContent>
         </Container>
     )
