@@ -47,12 +47,12 @@ export default function SugarScreen() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState(null);
   const clientId = `emqx_react_${Math.random().toString(16).substring(2, 8)}`;
-  const username = "bssm_free";
-  const password = "bssm_free"; 
+  const username = "bssm_smart";
+  const password = "bssmsmart"; 
   const [client, setClient] = useState(null);
 
   useEffect(() => {
-  const mqttClient = mqtt.connect("ws://10.150.2.255:9001", {
+  const mqttClient = mqtt.connect("ws://10.129.59.145:9001", {
     clientId,
     username,
     password,

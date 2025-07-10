@@ -18,10 +18,10 @@ export default function StockPage() {
   const clientId = `stock_mqtt_${Math.random().toString(16).substring(2, 8)}`;
 
   useEffect(() => {
-    const mqttClient = mqtt.connect('ws://10.150.2.255:9001', {
+    const mqttClient = mqtt.connect('ws://10.129.59.145:9001', {
       clientId,
-      username: 'bssm_free',
-      password: 'bssm_free',
+      username: 'bssm_smart',
+      password: 'bssmsmart',
     });
 
     mqttClient.on('connect', () => {
