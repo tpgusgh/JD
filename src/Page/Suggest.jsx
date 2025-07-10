@@ -1,14 +1,33 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components/native";
-
+import { useNavigation } from 'expo-router';
 export default function Suggest() {
-  const [step, setStep] = useState("input"); // 'input' | 'loading' | 'result'
+  const [step, setStep] = useState("input"); 
   const [inputText, setInputText] = useState("");
   const [responseData, setResponseData] = useState(null);
-
+  const navigation = useNavigation();
+  const levelToSliderValue = (level) => {
+  switch (level?.toLowerCase()) {
+    case "none":
+      return 0.0;
+    case "None":
+      return 0.0;
+    case " none ":
+      return 0.0;
+    case "low":
+      return 0.25;
+    case "medium":
+      return 0.5;
+    case "high":
+      return 1.0;
+    default:
+      return 0.5; 
+  }
+};
   const convertLevel = (level) => {
     switch (level) {
       case "none": return "없음";
+      case " none ": return "없음";
       case "None": return "없음";
       case "low": return "적음";
       case "medium": return "중간";
@@ -17,6 +36,17 @@ export default function Suggest() {
     }
   };
 
+   const handleOrder = () => {
+    const levels = [
+      levelToSliderValue(responseData?.water),
+      levelToSliderValue(responseData?.coffee_powder),
+      levelToSliderValue(responseData?.sugar),
+      levelToSliderValue(responseData?.iced_tea_powder),
+    ];
+
+
+    navigation.navigate("SugarScreen", { levels });
+  };
   const handleSubmit = async () => {
     setStep("loading");
 
@@ -28,8 +58,9 @@ export default function Suggest() {
         },
         body: JSON.stringify({ prompt: inputText }),
       });
-
+      
       const data = await res.json();
+      console.log(data);
       setResponseData(data);
       setStep("result");
     } catch (error) {
@@ -82,7 +113,7 @@ export default function Suggest() {
         )}
       </ResultBox>
       <>
-      <SubmitButton onPress={() => setStep("input")}>
+      <SubmitButton onPress={handleOrder}>
         <SubmitButtonText>주문</SubmitButtonText>
       </SubmitButton>
       <SubmitButton onPress={() => setStep("input")}>

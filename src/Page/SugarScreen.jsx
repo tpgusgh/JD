@@ -3,6 +3,7 @@ import React, { useState, useCallback,useEffect } from 'react';
 import styled from 'styled-components/native';
 import Slider from '@react-native-community/slider';
 import { useNavigation } from 'expo-router';
+import { useRoute } from "@react-navigation/native";
 const mqtt = init;
 
 const CustomSlider = React.memo(({ title, value, onFinalChange }) => {
@@ -31,21 +32,23 @@ const CustomSlider = React.memo(({ title, value, onFinalChange }) => {
       </ThumbTouchArea>
 
       <SelectedValue>
-        선택: {tempValue < 0.1 ? '없음' : tempValue < 0.33 ? "적음" : tempValue < 0.66 ? '중간' : '많음'}
+        선택: {tempValue <= 0.01 ? '없음' : tempValue <= 0.25 ? "적음" : tempValue <= 0.5 ? '중간' : '많음'}
       </SelectedValue>
     </SliderBlock>
   );
 });
 
 export default function SugarScreen() {
-  const [levels, setLevels] = useState([0.5, 0.5, 0.5, 0.5]);
-  const titles = ['설탕량', '커피량', '얼음량', '우유량'];
+  const route = useRoute();
+  const initialLevels = route.params?.levels || [0.5, 0.5, 0.5, 0.5];
+  const [levels, setLevels] = useState(initialLevels);
+  
   const navigation = useNavigation();
   const [isExpanded, setIsExpanded] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState(null);
   const clientId = `emqx_react_${Math.random().toString(16).substring(2, 8)}`;
-  const username = "bssm_free"; //클라에셔햐교
-  const password = "bssm_free"; //esp에서도 설정 필수
+  const username = "bssm_free";
+  const password = "bssm_free"; 
   const [client, setClient] = useState(null);
 
   useEffect(() => {
@@ -75,10 +78,10 @@ export default function SugarScreen() {
   const send = () => {
   if (client && client.connected) {
     const payload = JSON.stringify({
-      sugar: levels[0],
+      water: levels[0],
       coffee: levels[1],
-      ice: levels[2],
-      milk: levels[3],
+      sugar: levels[2],
+      ice: levels[3],
       room: selectedRoom,
     });
 
@@ -103,17 +106,17 @@ export default function SugarScreen() {
       return next;
     });
   }, []);
-
+  const titles = ['물량', '커피가루량', '설탕량', '아이스티량'];
   return (
     <Container>
       <BackArrow>{'‹'}</BackArrow>
       <CoffeeIcon>☕</CoffeeIcon>
 
-      {levels.map((value, i) => (
+      {titles.map((title, i) => (
         <CustomSlider
           key={i}
-          title={titles[i]}
-          value={value}
+          title={title}
+          value={levels[i]}
           onFinalChange={(val) => updateLevel(i, val)}
         />
       ))}
