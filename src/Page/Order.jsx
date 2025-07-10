@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from "styled-components/native";
 import SmallBox from "../components/SmallBox.jsx";
 import HalfArrow from "@/src/assets/images/HalfArrow";
 import { useNavigation } from "expo-router";
@@ -12,10 +12,9 @@ export default function Order(){
             </BackButton>
             <MainText>선택해주세요</MainText>
             <LowContent>
-                <SmallBox text="메뉴 추천받기" go=" " />
+                <SmallBox text="AI에게 추천받기" go="Suggest" />
                 <SmallBox text="메뉴 고르기" go="SugarScreen" />
             </LowContent>
-            
         </Container>
     )
 }

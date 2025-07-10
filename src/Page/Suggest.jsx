@@ -1,0 +1,163 @@
+import React, { useState, useEffect } from "react";
+import styled from "styled-components/native";
+
+export default function Suggest() {
+  const [step, setStep] = useState("input"); // 'input' | 'loading' | 'result'
+  const [inputText, setInputText] = useState("");
+  const [responseData, setResponseData] = useState(null);
+
+  const convertLevel = (level) => {
+    switch (level) {
+      case "none": return "없음";
+      case "None": return "없음";
+      case "low": return "적음";
+      case "medium": return "중간";
+      case "high": return "많음";
+      default: return level;
+    }
+  };
+
+  const handleSubmit = async () => {
+    setStep("loading");
+
+    try {
+      const res = await fetch("http://10.129.57.133:8080/recommend", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ prompt: inputText }),
+      });
+
+      const data = await res.json();
+      setResponseData(data);
+      setStep("result");
+    } catch (error) {
+      console.error("에러 발생:", error);
+      setResponseData({
+        text: "서버와의 연결에 실패했어요. 다시 시도해주세요.",
+      });
+      setStep("result");
+    }
+  };
+
+  const renderInput = () => (
+    <Container>
+      <MainText>기분을 입력해주세요</MainText>
+      <InputContainer>
+        <StyledInput
+          placeholder="예: 기분이 처지고 피곤해요"
+          value={inputText}
+          onChangeText={setInputText}
+          multiline
+        />
+        <SubmitButton onPress={handleSubmit}>
+          <SubmitButtonText>제출</SubmitButtonText>
+        </SubmitButton>
+      </InputContainer>
+    </Container>
+  );
+
+  const renderLoading = () => (
+    <Container>
+      <MainText>추천을 생성 중이에요...</MainText>
+      <LoadingSpinner />
+    </Container>
+  );
+
+  const renderResult = () => (
+    <Container>
+      <MainText>이렇게 주문할까요?</MainText>
+      <ResultBox>
+        {responseData?.title && <ResultText>제목:{responseData.title}</ResultText>}
+        {responseData?.text && <ResultText>{responseData.text}</ResultText>}
+
+        {responseData?.water && (
+          <>
+            <Label>물: {convertLevel(responseData.water)}</Label>
+            <Label>커피 가루: {convertLevel(responseData.coffee_powder)}</Label>
+            <Label>설탕: {convertLevel(responseData.sugar)}</Label>
+            <Label>아이스티 가루: {convertLevel(responseData.iced_tea_powder)}</Label>
+          </>
+        )}
+      </ResultBox>
+      <>
+      <SubmitButton onPress={() => setStep("input")}>
+        <SubmitButtonText>주문</SubmitButtonText>
+      </SubmitButton>
+      <SubmitButton onPress={() => setStep("input")}>
+        <SubmitButtonText>다시 하기</SubmitButtonText>
+      </SubmitButton>
+      </>
+      
+    </Container>
+  );
+
+  if (step === "loading") return renderLoading();
+  if (step === "result") return renderResult();
+  return renderInput();
+}
+
+const Container = styled.View`
+  flex: 1;
+  background-color: #fff;
+  justify-content: center;
+  padding: 20px;
+`;
+
+const MainText = styled.Text`
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 30px;
+`;
+
+const InputContainer = styled.View`
+  margin-top: 10px;
+`;
+
+const StyledInput = styled.TextInput`
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 16px;
+  background-color: #f9f9f9;
+  height: 120px;
+  text-align-vertical: top;
+`;
+
+const SubmitButton = styled.TouchableOpacity`
+  margin-top: 20px;
+  background-color: #007aff;
+  padding: 12px;
+  border-radius: 10px;
+  align-items: center;
+`;
+
+const SubmitButtonText = styled.Text`
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+`;
+
+const ResultBox = styled.View`
+  background-color: #f2f2f2;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px 0;
+`;
+
+const ResultText = styled.Text`
+  font-size: 16px;
+  margin-bottom: 12px;
+`;
+
+const Label = styled.Text`
+  font-size: 15px;
+  margin-bottom: 6px;
+`;
+
+const LoadingSpinner = styled.ActivityIndicator.attrs(() => ({
+  size: "large",
+  color: "#007aff",
+}))``;

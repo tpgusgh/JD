@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from "styled-components/native";
 import BigBox from "../components/BigBox.jsx";
 import Coffe from "../assets/images/coffe.jsx"
 export default function MainPage(){
