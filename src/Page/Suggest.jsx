@@ -12,13 +12,33 @@ export default function Suggest() {
       return 0.0;
     case "None":
       return 0.0;
+    case " None ":
+      return 0.0;
     case " none ":
       return 0.0;
     case "low":
       return 0.25;
+    case " low ":
+      return 0.25;
+    case "Low":
+      return 0.25;
+    case " Low ":
+      return 0.25;
     case "medium":
       return 0.5;
+    case " medium ":
+      return 0.5;
+    case "Medium":
+      return 0.5;
+    case " Medium ":
+      return 0.5;
     case "high":
+      return 1.0;
+    case " high ":
+      return 1.0;
+    case "High":
+      return 1.0;
+    case " High ":
       return 1.0;
     default:
       return 0.5; 
@@ -28,10 +48,20 @@ export default function Suggest() {
     switch (level) {
       case "none": return "없음";
       case " none ": return "없음";
+      case "None ": return "없음";
       case "None": return "없음";
+      case " None ": return "없음";
       case "low": return "적음";
+      case " low ": return "적음";
+      case "Low": return "적음";
+      case " Low ": return "적음";
       case "medium": return "중간";
+      case " medium ": return "중간";
+      case " Medium ": return "중간";
+      case "Medium": return "중간";
       case "high": return "많음";
+      case "High": return "많음";
+      case " high ": return "많음";
       default: return level;
     }
   };
@@ -40,8 +70,9 @@ export default function Suggest() {
     const levels = [
       levelToSliderValue(responseData?.water),
       levelToSliderValue(responseData?.coffee_powder),
-      levelToSliderValue(responseData?.sugar),
       levelToSliderValue(responseData?.iced_tea_powder),
+      levelToSliderValue(responseData?.green_tea),
+      levelToSliderValue(responseData?.sugar),
     ];
 
 
@@ -106,9 +137,21 @@ export default function Suggest() {
         {responseData?.water && (
           <>
             <Label>물: {convertLevel(responseData.water)}</Label>
-            <Label>커피 가루: {convertLevel(responseData.coffee_powder)}</Label>
-            <Label>설탕: {convertLevel(responseData.sugar)}</Label>
-            <Label>아이스티 가루: {convertLevel(responseData.iced_tea_powder)}</Label>
+            {responseData?.coffee_powder && convertLevel(responseData.coffee_powder) !== "없음" && (
+              <Label>커피 가루: {convertLevel(responseData.coffee_powder)}</Label>
+            )}
+
+            {responseData?.iced_tea_powder && convertLevel(responseData.iced_tea_powder) !== "없음" && (
+              <Label>아이스티 가루: {convertLevel(responseData.iced_tea_powder)}</Label>
+            )}
+
+            {responseData?.green_tea && convertLevel(responseData.green_tea) !== "없음" && (
+              <Label>녹차 가루: {convertLevel(responseData.green_tea)}</Label>
+            )}
+
+            {responseData?.sugar && convertLevel(responseData.sugar) !== "없음" && (
+              <Label>설탕: {convertLevel(responseData.sugar)}</Label>
+            )}
           </>
         )}
       </ResultBox>

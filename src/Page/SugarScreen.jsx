@@ -32,7 +32,7 @@ const CustomSlider = React.memo(({ title, value, onFinalChange }) => {
       </ThumbTouchArea>
 
       <SelectedValue>
-        선택: {tempValue <= 0.01 ? '없음' : tempValue <= 0.25 ? "적음" : tempValue <= 0.5 ? '중간' : '많음'}
+        선택: {tempValue <= 0.01 ? '없음' : tempValue <= 0.49 ? "적음" : tempValue <= 0.75 ? '중간' : '많음'}
       </SelectedValue>
     </SliderBlock>
   );
@@ -40,7 +40,7 @@ const CustomSlider = React.memo(({ title, value, onFinalChange }) => {
 
 export default function SugarScreen() {
   const route = useRoute();
-  const initialLevels = route.params?.levels || [0.5, 0.5, 0.5, 0.5];
+  const initialLevels = route.params?.levels || [0.5, 0.5, 0.5, 0.5, 0.5];
   const [levels, setLevels] = useState(initialLevels);
   
   const navigation = useNavigation();
@@ -80,8 +80,9 @@ export default function SugarScreen() {
     const payload = JSON.stringify({
       water: levels[0],
       coffee: levels[1],
-      sugar: levels[2],
-      ice: levels[3],
+      ice_tea: levels[2],
+      green_tea: levels[3],
+      sugar: levels[4],
       room: selectedRoom,
     });
 
@@ -106,7 +107,7 @@ export default function SugarScreen() {
       return next;
     });
   }, []);
-  const titles = ['물량', '커피가루량', '설탕량', '아이스티량'];
+  const titles = ['물량', '커피가루량', '아이스티가루량', '녹차가루량', '설탕량'];
   return (
     <Container>
       <BackArrow>{'‹'}</BackArrow>
